@@ -30,16 +30,8 @@ public class Conta {
 		
 	}
 
-//	public Conta(Cliente cliente, Long angecia, double saldo, Operacao operacao, List<Operacao> extrato) {
-//
-//		this.cliente = cliente;
-//		this.angecia = angecia;
-//		this.saldo = saldo;
-//		this.operacao = operacao;
-//		
-//	}
 	
-	public Conta(Cliente cliente, Long angecia, double saldo) {
+	public Conta(Cliente cliente, Long angecia, double saldo, Operacao operacao) {
 
 		this.cliente = cliente;
 		this.agencia = angecia;

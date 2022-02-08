@@ -33,14 +33,14 @@ public class ClienteServiceImpl implements ClienteService{
 	}
 
 	@Override
-	public Cliente busscarPorId(Long id) {
+	public Cliente buscarPorId(Long id) {
 		Optional<Cliente> cliente = clienteRepository.findById(id);
 		return cliente.get(); 
 	}
 
 	@Override
-	public void salvar(@RequestBody Cliente cliente) {
-		salvarClientecomCep(cliente);
+	public Cliente salvar(@RequestBody Cliente cliente) {
+		return salvarClientecomCep(cliente);
 	}
 
 
@@ -57,7 +57,7 @@ public class ClienteServiceImpl implements ClienteService{
 		clienteRepository.deleteById(id);
 	}
 	
-	private void salvarClientecomCep(Cliente cliente) {
+	private Cliente salvarClientecomCep(Cliente cliente) {
 		String cep = cliente.getEndereco().getCep();
 		Endereco endereco = enderecoRepository.findById(cep).orElseGet(() ->{
 			Endereco novoEndereco = viaCep.buscarEndecoPorCep(cep);
@@ -65,7 +65,7 @@ public class ClienteServiceImpl implements ClienteService{
 			return novoEndereco;
 		});
 		cliente.setEndereco(endereco);
-		clienteRepository.save(cliente);
+		return clienteRepository.save(cliente);
 	}
 
 }

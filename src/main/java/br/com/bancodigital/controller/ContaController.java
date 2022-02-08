@@ -37,6 +37,7 @@ public class ContaController {
 	}
 
 	
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<Conta> buscarId(@PathVariable Long id) {
 		Optional<Conta> conta = contaRepository.findById(id);
@@ -45,10 +46,10 @@ public class ContaController {
 		}
 		
 		else if(conta.isEmpty()) {
-			return (ResponseEntity<Conta>) ResponseEntity.badRequest(); 
+			return ResponseEntity.badRequest().build(); 
 		}
 		else {
-			return (ResponseEntity<Conta>) ResponseEntity.notFound();
+			return ResponseEntity.notFound().build();
 		}
 	}
 	
@@ -56,6 +57,7 @@ public class ContaController {
 	@ResponseBody
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public Conta abrirConta(@RequestBody Conta conta) {
+	
 		return contaService.salvar(conta);
 	}
 	
@@ -65,11 +67,11 @@ public class ContaController {
 		
 		if(conta.isPresent()) {
 			contaService.deletar(id);
-			return (ResponseEntity<?>) ResponseEntity.noContent();
+			return ResponseEntity.noContent().build();
 		}
 		
 		else {
-			return (ResponseEntity<?>) ResponseEntity.notFound();
+			return ResponseEntity.notFound().build();
 		}
 	}
 }

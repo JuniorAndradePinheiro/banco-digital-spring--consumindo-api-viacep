@@ -24,9 +24,7 @@ public class ContaServiceImpl implements ContaService{
 	public Conta salvar(Conta conta) {
 		Long idCliente = conta.getCliente().getId();
 		Optional<Cliente> cliente = clienteRepository.findById(idCliente);
-//		Cliente cliente = clienteRepository.findById(idCliente).orElseGet(() -> {
-//			return  new Cliente();
-//		});
+
 			conta.setCliente(cliente.get());
 			contaRepository.save(conta);
 			return conta;
