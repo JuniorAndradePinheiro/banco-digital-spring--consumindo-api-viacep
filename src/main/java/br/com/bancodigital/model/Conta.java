@@ -31,10 +31,10 @@ public class Conta {
 	}
 
 	
-	public Conta(Cliente cliente, Long angecia, double saldo, Operacao operacao) {
+	public Conta(Cliente cliente, Long agencia, double saldo, Operacao operacao) {
 
 		this.cliente = cliente;
-		this.agencia = angecia;
+		this.agencia = agencia;
 		this.saldo = saldo;
 		this.operacao = operacao;
 		
@@ -49,12 +49,12 @@ public class Conta {
 		this.cliente = cliente;
 	}
 
-	public Long getAngecia() {
+	public Long getAgencia() {
 		return agencia;
 	}
 
-	public void setAngecia(Long angecia) {
-		this.agencia = angecia;
+	public void setAgencia(Long agencia) {
+		this.agencia = agencia;
 	}
 
 	public double getSaldo() {
@@ -132,7 +132,7 @@ public class Conta {
 
 	@Override
 	public String toString() {
-		return "Conta [numero=" + numero + ", cliente=" + cliente + ", angecia=" + agencia + ", saldo=" + saldo
+		return "Conta [numero=" + numero + ", cliente=" + cliente + ", agencia=" + agencia + ", saldo=" + saldo
 				+ ", operacao=" + operacao + "]";
 	}
 	

@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Operacao {
 
+	//private static final String DATA_HORA_PATTERN = "dd/MM/yyyy HH:mm:ss";
 	private LocalDateTime data;
 	private String descricao;
 	private double valor;
@@ -17,6 +18,7 @@ public class Operacao {
 
 	public Operacao(String descricao, double valor) {
 		this.data = LocalDateTime.now();
+		
 		this.descricao = descricao;
 		this.valor = valor;
 	}
@@ -27,6 +29,7 @@ public class Operacao {
 
 	public void setData(LocalDateTime data) {
 		this.data = data;
+		
 	}
 
 	public String getDescricao() {

@@ -42,5 +42,42 @@ public class ContaServiceImpl implements ContaService{
 	public void deletar(Long id) {
 		contaRepository.deleteById(id);
 	}
+	
+	/*
+	 * ---------------------------------------- Daqui para baixo são métodos referentes as operações e transações ----------------------------------------
+	 */
+
+		@Override
+		public void sacar(double valor, Long id) {
+			Optional<Conta> contaOp = contaRepository.findById(id);
+				
+			Conta conta = (Conta) contaOp.get();
+			conta.setSaldo(conta.getSaldo() - valor);
+			contaRepository.save(conta);
+			
+		}
+
+		@Override
+		public void depositar(double valor, Long id) {
+			Optional<Conta> contaOp = contaRepository.findById(id);
+			
+			Conta conta = (Conta) contaOp.get();
+			conta.setSaldo(conta.getSaldo() + valor);
+			contaRepository.save(conta);
+			
+		}
+
+		@Override
+		public void transferir(double valor, Long id, Long idContaDestino) {
+			Optional<Conta> contaOp = contaRepository.findById(id);
+			
+			Conta conta = (Conta) contaOp.get();
+			conta.setSaldo(conta.getSaldo() - valor);
+			
+			depositar(valor, idContaDestino);
+			
+			contaRepository.save(conta);
+			
+		}
 
 }

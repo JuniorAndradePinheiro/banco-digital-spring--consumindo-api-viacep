@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,6 +69,63 @@ public class ContaController {
 		if(conta.isPresent()) {
 			contaService.deletar(id);
 			return ResponseEntity.noContent().build();
+		}
+		
+		else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	/*
+	 * ---------------------------------------- Daqui para baixo são métodos referentes as operações e transações ----------------------------------------
+	 */
+	
+	@PostMapping("/sacar")
+	public ResponseEntity<Object> sacar(@RequestParam Long id, @RequestParam double valor){
+		
+		Optional<Conta> conta = contaRepository.findById(id);
+		
+		if(conta.isEmpty()) {
+			return  ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+		
+		contaService.sacar(valor, id);
+		return ResponseEntity.ok().body(String.format("Saldo Atual: R$ %.2f", conta.get().getSaldo()));
+	}
+	
+	@PostMapping("/depositar")
+	public ResponseEntity<Object> Depositar(@RequestParam Long id, @RequestParam double valor){
+		
+		Optional<Conta> conta = contaRepository.findById(id);
+		
+		if(!conta.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		else if(conta.isEmpty()) {
+			return  ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+		
+		contaService.depositar(valor, id);
+		return ResponseEntity.ok().body(String.format("Saldo Atual: R$ %.2f", conta.get().getSaldo()));
+	}
+	
+	@PostMapping("/transferir")
+	public ResponseEntity<?> transferir(@RequestParam Long id, @RequestParam double valor, @RequestParam Long idContaDestino){
+		Optional<Conta> conta = contaRepository.findById(id);
+		Optional<Conta> contaDest = contaRepository.findById(idContaDestino);
+		
+		if(conta.isPresent() && contaDest.isPresent()) {
+			contaService.transferir(valor, id, idContaDestino);
+			return ResponseEntity.ok().body(String.format("Saldo Atual: R$ %.2f", conta.get().getSaldo()));
+		}
+		
+		else if(conta.isPresent() && !contaDest.isPresent()) {
+			return ResponseEntity.badRequest().body(String.format("A conta com o número %d não foi encontrada", contaDest));
+		}
+		
+		else if(!conta.isPresent() && !contaDest.isPresent()){
+			return ResponseEntity.badRequest().body(String.format("A conta com o número %d não foi encontrada", conta));
 		}
 		
 		else {

@@ -11,4 +11,7 @@ public interface ContaService {
 	void atualizar(Long id, Conta conta);
 	void deletar(Long id);
 
+	void sacar(double valor, Long id);
+	void depositar(double valor, Long id);
+	void transferir(double valor, Long id, Long idContaDestino);
 }
