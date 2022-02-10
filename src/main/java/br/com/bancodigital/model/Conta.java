@@ -1,13 +1,10 @@
 package br.com.bancodigital.model;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-
-import org.springframework.lang.Nullable;
 
 @Entity
 public class Conta {
@@ -17,26 +14,21 @@ public class Conta {
 	protected Long numero;
 	@ManyToOne
 	protected Cliente cliente;
-	//@OneToMany
 	protected Long agencia;
 	protected TipoConta tipo;
 	protected double saldo;
-	@Embedded
-	@Nullable
-	protected Operacao operacao;
-//	protected List<Operacao> extrato = new ArrayList<>();
 	
 	public Conta() {
 		
 	}
 
 	
-	public Conta(Cliente cliente, Long agencia, double saldo, Operacao operacao) {
+	public Conta(Cliente cliente, Long agencia, double saldo) {
 
 		this.cliente = cliente;
 		this.agencia = agencia;
 		this.saldo = saldo;
-		this.operacao = operacao;
+		//this.operacao = operacao;
 		
 	}
 
@@ -65,18 +57,6 @@ public class Conta {
 		this.saldo = saldo;
 	}
 
-	public Operacao getOperacao() {
-		return operacao;
-	}
-
-	public void setOperacao(Operacao operacao) {
-		this.operacao = operacao;
-	}
-
-	
-
-	
-
 	public Long getNumero() {
 		return numero;
 	}
@@ -88,7 +68,6 @@ public class Conta {
 		result = prime * result + ((agencia == null) ? 0 : agencia.hashCode());
 		result = prime * result + ((cliente == null) ? 0 : cliente.hashCode());
 		result = prime * result + ((numero == null) ? 0 : numero.hashCode());
-		result = prime * result + ((operacao == null) ? 0 : operacao.hashCode());
 		long temp;
 		temp = Double.doubleToLongBits(saldo);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
@@ -120,11 +99,6 @@ public class Conta {
 				return false;
 		} else if (!numero.equals(other.numero))
 			return false;
-		if (operacao == null) {
-			if (other.operacao != null)
-				return false;
-		} else if (!operacao.equals(other.operacao))
-			return false;
 		if (Double.doubleToLongBits(saldo) != Double.doubleToLongBits(other.saldo))
 			return false;
 		return true;
@@ -133,7 +107,7 @@ public class Conta {
 	@Override
 	public String toString() {
 		return "Conta [numero=" + numero + ", cliente=" + cliente + ", agencia=" + agencia + ", saldo=" + saldo
-				+ ", operacao=" + operacao + "]";
+				+ "]";
 	}
 	
 	

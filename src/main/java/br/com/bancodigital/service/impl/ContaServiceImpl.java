@@ -7,8 +7,10 @@ import org.springframework.stereotype.Component;
 
 import br.com.bancodigital.model.Cliente;
 import br.com.bancodigital.model.Conta;
+import br.com.bancodigital.model.Operacao;
 import br.com.bancodigital.repository.ClienteRepository;
 import br.com.bancodigital.repository.ContaRepository;
+import br.com.bancodigital.repository.OperacaoRepository;
 import br.com.bancodigital.service.ContaService;
 
 
@@ -19,6 +21,8 @@ public class ContaServiceImpl implements ContaService{
 	ContaRepository contaRepository;
 	@Autowired
 	ClienteRepository clienteRepository;
+	@Autowired
+	OperacaoRepository operacaoRepository;
 
 	@Override
 	public Conta salvar(Conta conta) {
@@ -53,6 +57,10 @@ public class ContaServiceImpl implements ContaService{
 				
 			Conta conta = (Conta) contaOp.get();
 			conta.setSaldo(conta.getSaldo() - valor);
+			
+			Operacao operacao = new Operacao("Saque", valor, conta);
+			operacaoRepository.save(operacao);
+			
 			contaRepository.save(conta);
 			
 		}
@@ -63,6 +71,10 @@ public class ContaServiceImpl implements ContaService{
 			
 			Conta conta = (Conta) contaOp.get();
 			conta.setSaldo(conta.getSaldo() + valor);
+			
+			Operacao operacao = new Operacao("Depósito", valor, conta);
+			operacaoRepository.save(operacao);
+			
 			contaRepository.save(conta);
 			
 		}
@@ -74,7 +86,16 @@ public class ContaServiceImpl implements ContaService{
 			Conta conta = (Conta) contaOp.get();
 			conta.setSaldo(conta.getSaldo() - valor);
 			
+			Operacao operacao = new Operacao("Transferencia", valor, conta);
+			operacaoRepository.save(operacao);			
+			
+			
 			depositar(valor, idContaDestino);
+			
+			Optional<Conta> contaDestOp = contaRepository.findById(idContaDestino);
+			Conta contaDest = (Conta) contaDestOp.get();
+			Operacao operacaoDest = new Operacao("Depósito Transf", valor, contaDest);
+			operacaoRepository.save(operacaoDest);
 			
 			contaRepository.save(conta);
 			

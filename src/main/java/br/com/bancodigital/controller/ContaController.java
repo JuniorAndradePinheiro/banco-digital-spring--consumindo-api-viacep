@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.bancodigital.model.Conta;
+import br.com.bancodigital.model.Operacao;
 import br.com.bancodigital.repository.ContaRepository;
+import br.com.bancodigital.repository.OperacaoRepository;
 import br.com.bancodigital.service.ContaService;
 
 @RestController
@@ -30,6 +32,9 @@ public class ContaController {
 	
 	@Autowired
 	ContaService contaService;
+	
+	@Autowired
+	OperacaoRepository operacaoRepository;
 	
 	
 	@GetMapping
@@ -131,5 +136,12 @@ public class ContaController {
 		else {
 			return ResponseEntity.notFound().build();
 		}
+	}
+	
+	@GetMapping("/extrato/{idConta}")
+	public ResponseEntity<List<Operacao>> extrato(@PathVariable Long idConta){
+		Optional<Conta> contaOp = contaRepository.findById(idConta);
+		Conta conta = contaOp.get();
+		return ResponseEntity.ok().body(operacaoRepository.findByConta(conta));
 	}
 }
