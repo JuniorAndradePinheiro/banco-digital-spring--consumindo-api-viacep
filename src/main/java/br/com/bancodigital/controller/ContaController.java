@@ -2,7 +2,9 @@ package br.com.bancodigital.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.bancodigital.dto.ContaDto;
+import br.com.bancodigital.dto.OperacaoDto;
 import br.com.bancodigital.model.Conta;
 import br.com.bancodigital.model.Operacao;
 import br.com.bancodigital.repository.ContaRepository;
@@ -28,27 +32,38 @@ import br.com.bancodigital.service.ContaService;
 public class ContaController {
 	
 	@Autowired
-	ContaRepository contaRepository;
+	private ContaRepository contaRepository;
 	
 	@Autowired
-	ContaService contaService;
+	private ContaService contaService;
 	
 	@Autowired
-	OperacaoRepository operacaoRepository;
+	private OperacaoRepository operacaoRepository;
+	
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	
-	@GetMapping
-	public ResponseEntity<List<Conta>> Listar(){
-		return ResponseEntity.ok(contaRepository.findAll());
-	}
+//	@GetMapping
+//	public ResponseEntity<List<Conta>> Listar(){
+//		return ResponseEntity.ok(contaRepository.findAll());
+//	}
 
+
+	@GetMapping
+	public ResponseEntity<List<ContaDto>> Listar(){
+		return ResponseEntity.ok(contaRepository.findAll()
+				.stream()
+				.map(this::toContaDto)
+				.collect(Collectors.toList()));
+	}
 	
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Conta> buscarId(@PathVariable Long id) {
+	public ResponseEntity<ContaDto> buscarId(@PathVariable Long id) {
 		Optional<Conta> conta = contaRepository.findById(id);
 		if(conta.isPresent()) {
-			return ResponseEntity.ok(conta.get());
+			return ResponseEntity.ok(toContaDto(conta.get()));
 		}
 		
 		else if(conta.isEmpty()) {
@@ -138,10 +153,29 @@ public class ContaController {
 		}
 	}
 	
+//	@GetMapping("/extrato/{idConta}")
+//	public ResponseEntity<List<Operacao>> extrato(@PathVariable Long idConta){
+//		Optional<Conta> contaOp = contaRepository.findById(idConta);
+//		Conta conta = contaOp.get();
+//		return ResponseEntity.ok().body(operacaoRepository.findByConta(conta));
+//	}
+	
+
 	@GetMapping("/extrato/{idConta}")
-	public ResponseEntity<List<Operacao>> extrato(@PathVariable Long idConta){
+	public ResponseEntity<List<OperacaoDto>> extrato(@PathVariable Long idConta){
 		Optional<Conta> contaOp = contaRepository.findById(idConta);
 		Conta conta = contaOp.get();
-		return ResponseEntity.ok().body(operacaoRepository.findByConta(conta));
+		return ResponseEntity.ok().body(operacaoRepository.findByConta(conta)
+				.stream()
+				.map(this::toListOperacaoDto)
+				.collect(Collectors.toList()));
+	}
+	
+	private ContaDto toContaDto(Conta conta) {
+		return modelMapper.map(conta, ContaDto.class);
+	}
+	
+	private OperacaoDto toListOperacaoDto(Operacao operacao) {
+		return  modelMapper.map(operacao, OperacaoDto.class);
 	}
 }

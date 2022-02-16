@@ -23,12 +23,12 @@ public class Conta {
 	}
 
 	
-	public Conta(Cliente cliente, Long agencia, double saldo) {
+	public Conta(Cliente cliente, Long agencia, TipoConta tipo, double saldo) {
 
 		this.cliente = cliente;
 		this.agencia = agencia;
+		this.tipo = tipo;
 		this.saldo = saldo;
-		//this.operacao = operacao;
 		
 	}
 
@@ -52,6 +52,17 @@ public class Conta {
 	public double getSaldo() {
 		return saldo;
 	}
+
+	
+	public TipoConta getTipo() {
+		return tipo;
+	}
+
+
+	public void setTipo(TipoConta tipo) {
+		this.tipo = tipo;
+	}
+
 
 	public void setSaldo(double saldo) {
 		this.saldo = saldo;

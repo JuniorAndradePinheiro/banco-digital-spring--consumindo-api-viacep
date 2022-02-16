@@ -22,6 +22,7 @@ public class Operacao {
 	@JsonFormat(pattern="dd-MM-yyyy HH:mm:ss")
 	private LocalDateTime data;
 	private String descricao;
+	@JsonFormat(pattern = "R$ %.2f")
 	private double valor;
 	
 	@ManyToOne

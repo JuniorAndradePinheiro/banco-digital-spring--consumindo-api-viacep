@@ -2,7 +2,9 @@ package br.com.bancodigital.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.bancodigital.dto.ClienteDto;
 import br.com.bancodigital.model.Cliente;
 import br.com.bancodigital.repository.ClienteRepository;
 import br.com.bancodigital.service.ClienteService;
@@ -25,19 +28,37 @@ import br.com.bancodigital.service.ClienteService;
 public class ClienteController {
 	
 	@Autowired
-	ClienteService clienteService;
+	private ClienteService clienteService;
 	@Autowired
-	ClienteRepository clienteRepository;
+	private ClienteRepository clienteRepository;
+	@Autowired
+	private ModelMapper modelMapper; //devido ao fato de ser somente uma biblioteca não é possivel injeta-la, por isso foi criada uma classe de configuração para criar um bean que o o spring gerencie 
+	
+//	@GetMapping()
+//	public List<Cliente> Listar() {
+//		return clienteService.buscarTodos();
+//	}
 	
 	@GetMapping()
-	public List<Cliente> Listar() {
-		return clienteService.buscarTodos();
-	}
+	public List<ClienteDto> Listar() {
+		return clienteService.buscarTodos()
+				.stream()
+				.map(this::toListClienteDto)
+				.collect(Collectors.toList());
+	}	
+	
+	
+	
+//	@GetMapping("/{id}")
+//	public ResponseEntity<Cliente> buscarId(@PathVariable Long id){
+//		Cliente cliente = clienteService.buscarPorId(id);
+//		return ResponseEntity.ok(cliente);
+//	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Cliente> buscarId(@PathVariable Long id){
+	public ResponseEntity<ClienteDto> buscarId(@PathVariable Long id){
 		Cliente cliente = clienteService.buscarPorId(id);
-		return ResponseEntity.ok(cliente);
+		return ResponseEntity.ok(toListClienteDto(cliente));
 	}
 	
 	@PostMapping
@@ -64,5 +85,9 @@ public class ClienteController {
 		else {
 			return ResponseEntity.notFound().build();
 		}
+	}
+	
+	private ClienteDto toListClienteDto(Cliente cliente){
+		return modelMapper.map(cliente, ClienteDto.class);
 	}
 }
