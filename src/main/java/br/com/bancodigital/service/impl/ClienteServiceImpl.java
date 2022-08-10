@@ -3,6 +3,7 @@ package br.com.bancodigital.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import br.com.bancodigital.service.exception.ElementNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +36,7 @@ public class ClienteServiceImpl implements ClienteService{
 	@Override
 	public Cliente buscarPorId(Long id) {
 		Optional<Cliente> cliente = clienteRepository.findById(id);
-		return cliente.get(); 
+		return cliente.orElseThrow(()-> new ElementNotFoundException("Objeto não encontrado"));
 	}
 
 	@Override

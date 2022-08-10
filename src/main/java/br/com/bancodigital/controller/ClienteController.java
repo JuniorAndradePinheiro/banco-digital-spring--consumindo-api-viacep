@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import br.com.bancodigital.service.exception.ElementNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,9 +57,14 @@ public class ClienteController {
 //	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<ClienteDto> buscarId(@PathVariable Long id){
-		Cliente cliente = clienteService.buscarPorId(id);
-		return ResponseEntity.ok(toListClienteDto(cliente));
+	public ResponseEntity<?> buscarId(@PathVariable Long id){
+		try{
+			Cliente cliente = clienteService.buscarPorId(id);
+			return ResponseEntity.ok(toListClienteDto(cliente));
+		}catch (ElementNotFoundException e){
+			e.getMessage();
+			return ResponseEntity.notFound().build();
+		}
 	}
 	
 	@PostMapping

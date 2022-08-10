@@ -5,6 +5,7 @@ import br.com.bancodigital.model.Endereco;
 import br.com.bancodigital.repository.ClienteRepository;
 import br.com.bancodigital.repository.EnderecoRepository;
 import br.com.bancodigital.service.ViaCepService;
+import br.com.bancodigital.service.exception.ElementNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ class ClienteServiceImplTest {
     public static final String NOME = "João";
     public static final String TELEFONE = "13 98133-6701";
     public static final Endereco ENDERECO = new Endereco("11712-580", "ABC", "Casa", "Tupi", "Praia Grande", "SP", "2a5s4", "222", "013", "FFF9");
-    public static final long ID = 1L;
+    public static final Long ID = 1L;
     @InjectMocks
     private ClienteServiceImpl clienteService;
 
@@ -59,6 +60,19 @@ class ClienteServiceImplTest {
         assertEquals(ID,response.getId());
         assertEquals(NOME, response.getNome());
         assertEquals(ENDERECO,response.getEndereco());
+    }
+
+    @Test
+    void whenBuscarPorIdReturnElementNotFoundException() {
+        when(repository.findById(anyLong())).thenThrow(new ElementNotFoundException("Objeto não encontrado"));
+
+        try {
+            clienteService.buscarPorId(ID);
+        } catch (Exception e){
+            assertEquals(ElementNotFoundException.class, e.getClass());
+            System.out.println(e.getMessage());
+            assertEquals("Objeto não encontrado", e.getMessage());
+        }
     }
 
     @Test
